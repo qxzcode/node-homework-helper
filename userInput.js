@@ -11,7 +11,8 @@ exports.getLine = getLine;
 exports.getLinePrompt = async function(prompt, validFunc) {
     let value;
     do {
-        process.stdout.write(chalk`    {cyanBright Token:} `);
+        process.stdout.write(prompt);
         value = await getLine();
-    } while (x == "" || (validFunc && !validFunc(value)));
+    } while (value == "" || (validFunc && !validFunc(value)));
+    return value;
 };

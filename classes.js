@@ -1,7 +1,7 @@
 const fs = require("fs");
 const chalk = require("chalk").default;
 const { areSameDay } = require("./util");
-const { getLine } = require("./userInput");
+const { getLinePrompt } = require("./userInput");
 const htmlParser = require("./htmlParser");
 const canvas = require("./canvas");
 
@@ -16,16 +16,33 @@ const classes = {
     async load() {
         console.log("Loading courses");
         
+        let areNew = false;
         const list = classes.classes = await new Promise((resolve, reject) => {
             fs.readFile(FILE, async (err, data) => {
                 if (err) {
                     if (err.code == "ENOENT") {
                         const json = await canvas.get("courses", {per_page:9999, enrollment_state:"active"});
-                        fs.writeFileSync("toast.json", JSON.stringify(json, null, 4));
-                        console.log(chalk`\n{cyanBright Now it's time to set up your courses.}\n`);
+                        // fs.writeFileSync("toast.json", JSON.stringify(json, null, 4));
+                        console.log(chalk`\n{cyanBright Now it's time to set up your courses.}`);
+                        let obj = {};
                         for (const c of json) {
-                            console.log(c.name);
+                            console.log(chalk`\nWould you like to include the course {bold ${c.name}}?`);
+                            const include = await getLinePrompt(chalk` {cyanBright (y/n)>} `, s => s=="y"||s=="n");
+                            if (include == "n") continue;
+                            console.log(chalk`What would you like to call it?`);
+                            const name = await getLinePrompt(chalk` {cyanBright >} `);
+                            console.log(chalk`What period do you have {bold ${name}}?`);
+                            const per = await getLinePrompt(chalk` {cyanBright (number)>} `, s => !isNaN(+s)&&!obj[s]);
+                            obj[per] = {
+                                name,
+                                canvasID: c.id,
+                                assignments: []
+                            };
+                            console.log(chalk` -> Period {bold ${per}}: {bold ${name}}`);
                         }
+                        console.log(chalk`\n{cyanBright That's all your courses!}`);
+                        areNew = true;
+                        setTimeout(() => resolve(obj), 2000);
                     } else {
                         reject(err);
                     }
@@ -36,6 +53,7 @@ const classes = {
                 }
             });
         });
+        if (areNew) classes.save();
         
         // add methods
         for (const per in list) {

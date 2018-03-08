@@ -27,13 +27,8 @@ async function setupAuth() {
     console.log(chalk`    3.  Click the {bold New Access Token} button`);
     console.log(chalk`    4.  Enter a {bold purpose} (e.g. "homework helper"), then click {bold Generate Token}`);
     console.log(chalk`    5.  Copy the token and {bold paste it here:}\n`);
-    let token;
-    do {
-        process.stdout.write(chalk`    {cyanBright Token:} `);
-        token = await getLine();
-    } while (token == "");
-    auth_token = token;
-    fs.writeFileSync("auth_token", token);
+    auth_token = await getLinePrompt(chalk`    {cyanBright Token:} `);
+    fs.writeFileSync("auth_token", auth_token);
     console.log(chalk`\nIf you need to change the token, edit the {bold auth_token} file.\n`);
 }
 
