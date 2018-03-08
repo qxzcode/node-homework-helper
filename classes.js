@@ -31,7 +31,7 @@ classes.loadAssignments = async function() {
         const c = classes[per];
         if (c.canvasID) {
             promises.push(canvas.get("courses/"+c.canvasID+"/assignments", {per_page:9999}).then(json => {
-                fs.writeFileSync("toast.json", JSON.stringify(json, null, 4));
+                // fs.writeFileSync("toast.json", JSON.stringify(json, null, 4));
                 console.log("Loaded "+json.length+" assignments for "+c.name);
                 
                 let assignments = [];
@@ -53,7 +53,7 @@ classes.loadAssignments = async function() {
                 assignments.sort((a, b) => a.due_at - b.due_at);
                 c.assignments = assignments;
                 
-                fs.writeFileSync("toast_proc.json", JSON.stringify(assignments, null, 4));
+                // fs.writeFileSync("toast_proc.json", JSON.stringify(assignments, null, 4));
             }));
         }
     }
