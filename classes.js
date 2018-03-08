@@ -36,7 +36,8 @@ const classes = {
                             obj[per] = {
                                 name,
                                 canvasID: c.id,
-                                assignments: []
+                                assignments: [],
+                                customAssignments: []
                             };
                             console.log(chalk` -> Period {bold ${per}}: {bold ${name}}`);
                         }
@@ -60,6 +61,11 @@ const classes = {
             const c = list[per];
             c.getHWDue = function(date) {
                 let list = [];
+                for (const a of c.customAssignments) {
+                    if (areSameDay(a.due_at, date)) {
+                        list.push(a);
+                    }
+                }
                 for (const a of c.assignments) {
                     if (areSameDay(a.due_at, date)) {
                         list.push(a);

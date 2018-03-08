@@ -1,4 +1,6 @@
-const { areSameDay, offsetDate, formatDate, clearScreen } = require("./util");
+const { areSameDay, offsetDate, formatDate, clearScreen, wait } = require("./util");
+const { getLine, getLinePrompt } = require("./userInput");
+const htmlParser = require("./htmlParser");
 
 const chalk = require("chalk").default; chalk.level = 1; // chalk.Level.Basic
 const opn = require("opn");
@@ -67,6 +69,9 @@ async function mode_week(input) {
         printWeek();
     } else if (input=="down") {
         if (weekCursor < week.length-1) weekCursor++;
+        printWeek();
+    } else if (input=="n") {
+        await newAssignment(week[weekCursor]);
         printWeek();
     } else if (input=="enter") {
         curMode = mode_day;
@@ -170,4 +175,26 @@ function getWeek(date = new Date(), setCursor) {
         }
     }
     return week;
+}
+
+
+async function newAssignment(due_at) {
+    clearScreen();
+    console.log(chalk`\n\n{cyanBright Create new assignment}\n`);
+    const name = await getLinePrompt(chalk`    {bold Assignment name:} `);
+    process.stdout.write(chalk`    {bold Description:} `);
+    let desc = await getLine();
+    if (desc == "") desc = "<none>No description</none>";
+    desc = htmlParser.parse(desc);
+    const per = await getLinePrompt(chalk`    {bold Period due:} `, s => !!classes.classes[s]);
+    const cls = classes.classes[per];
+    cls.customAssignments.push({
+        name,
+        desc,
+        due_at
+    });
+    console.log(chalk`\n{bold ${cls.name}} period {bold ${per}}:`);
+    console.log(chalk`    ${name}\n`);
+    classes.save();
+    await wait(2.0);
 }

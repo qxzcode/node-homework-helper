@@ -17,3 +17,9 @@ exports.formatDate = function(date) {
 exports.clearScreen = function() {
     process.stdout.write("\x1B[2J\x1B[0f")
 };
+
+exports.wait = function(secs) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, secs*1000);
+    });
+};

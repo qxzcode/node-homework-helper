@@ -1,6 +1,8 @@
 function getLine() {
     return new Promise((resolve, reject) => {
+        process.stdin.setRawMode(false);
         process.stdin.once("data", data => {
+            process.stdin.setRawMode(true);
             resolve(data.toString().trim());
         });
     });
