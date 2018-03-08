@@ -15,7 +15,7 @@ exports.formatDate = function(date) {
 };
 
 exports.clearScreen = function() {
-    process.stdout.write("\x1B[2J\x1B[0f")
+    process.stdout.write("\033c");//("\x1B[2J\x1B[0f")
 };
 
 exports.wait = function(secs) {

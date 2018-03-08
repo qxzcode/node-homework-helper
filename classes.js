@@ -61,14 +61,13 @@ const classes = {
             const c = list[per];
             c.getHWDue = function(date) {
                 let list = [];
-                for (const a of c.customAssignments) {
-                    if (areSameDay(a.due_at, date)) {
-                        list.push(a);
-                    }
-                }
-                for (const a of c.assignments) {
-                    if (areSameDay(a.due_at, date)) {
-                        list.push(a);
+                addAssignments(c.customAssignments);
+                addAssignments(c.assignments);
+                function addAssignments(asmts) {
+                    for (const a of asmts) {
+                        if (!a.complete && areSameDay(a.due_at, date)) {
+                            list.push(a);
+                        }
                     }
                 }
                 return list;

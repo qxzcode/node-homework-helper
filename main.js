@@ -101,6 +101,12 @@ async function mode_day(input) {
         printWeek();
     } else if (input=="o") {
         if (curAsmt) opn(curAsmt.url);
+    } else if (input=="d") {
+        if (curAsmt) {
+            curAsmt.complete = true;
+            if (homeworkCursor > 0) homeworkCursor--;
+            printWeek();
+        }
     } else {
         console.log("input: ", JSON.stringify(input+""));
     }
