@@ -13,3 +13,7 @@ exports.formatDate = function(date) {
     const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
     return weekdays[date.getDay()]+" "+months[date.getMonth()]+" "+date.getDate();
 };
+
+exports.clearScreen = function() {
+    process.stdout.write("\x1B[2J\x1B[0f")
+};

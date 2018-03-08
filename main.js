@@ -1,11 +1,7 @@
-const { areSameDay, offsetDate, formatDate } = require("./dateUtil");
+const { areSameDay, offsetDate, formatDate, clearScreen } = require("./util");
 
 const chalk = require("chalk").default; chalk.level = 1; // chalk.Level.Basic
-const readline = require("readline");
 const opn = require("opn");
-function clearScreen() {
-    process.stdout.write("\x1B[2J\x1B[0f")
-}
 
 let schedule;
 require("./daily_order").getSchedule(false).then(sch => {
@@ -22,6 +18,8 @@ let homeworkCursor = 0, curAsmt;
 
 let curMode = mode_week;
 async function startMain() {
+    await classes.load();
+    
     week = getWeek(weekDate, true);
     printWeek();
     
@@ -44,6 +42,8 @@ async function startMain() {
     });
     process.stdin.setRawMode(true);
 }
+
+
 
 async function mode_week(input) {
     if (input=="q") {
@@ -114,8 +114,8 @@ function printWeek() {
         dateStr = (day >= tomorrow? chalk.bgGreen : chalk.bgRed)(dateStr);
         let hw = [];
         let orderStr = schedule[+day].list.map(per => {
-            if (classes[per]) {
-                const cls = classes[per];
+            const cls = classes.classes[per];
+            if (cls) {
                 const asmts = cls.getHWDue(day);
                 if (asmts.length) hw.push([cls, asmts]);
                 return asmts.length? chalk.greenBright(per) : chalk.gray(per);
